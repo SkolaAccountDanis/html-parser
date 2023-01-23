@@ -24,9 +24,11 @@ class HTTPServer
 
             # #Er HTTP-PARSER tar emot "data" 
             parseddata = @request_handler.parse_request(data)
+            sizeOfData = parseddata.size
             resource = "./html#{parseddata[:resource]}"
-            p parseddata
+            # p parseddata
             p resource            
+            # p sizeOfData
 
             #Sen kolla om resursen (filen finns)
             if File.exists?(resource)
@@ -39,12 +41,12 @@ class HTTPServer
 
             session.print "HTTP/1.1 #{status}\r\n"
             session.print "Content-Type: text/html\r\n"
+            session.print "Content-Length: #{html.size}\r\n"
             session.print "\r\n"
             session.print html
             session.close
         end
     end
 end
-
 server = HTTPServer.new(4567)
 server.start
