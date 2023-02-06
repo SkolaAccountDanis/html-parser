@@ -22,18 +22,18 @@ class HTTPServer
             puts data
             puts "-" * 40 
 
-            # #Er HTTP-PARSER tar emot "data" 
             mime_types = {
                 "css" => "text/css",
-                "js" => "text/javascript",
-                "html" => "text/html"
+                "js" => "application/javascript",
+                "html" => "text/html",
+                "image" => "image/*",
+                "favicon" => "image/x-icon"
             }
             parseddata = @request_handler.parse_request(data)
             sizeOfData = parseddata.size
-            resource = "./html#{parseddata[:resource]}"
-            # p parseddata
-            # p resource            
-            # p sizeOfData
+            resource = "./files#{parseddata[:resource]}"
+            p "-########################################################################"
+            p resource
 
             #Sen kolla om resursen (filen finns)
             #kolla filändelsen med split
@@ -46,11 +46,17 @@ class HTTPServer
                 if file_ending == "css"
                     content_type = mime_types["css"]
                     content = File.read(resource)
-                elsif file_ending == "html"
-                    content_type = mime_types["html"]
-                    content = File.read(resource)
                 elsif file_ending == "js"
                     content_type = mime_types["js"]
+                    content = File.read(resource)
+                elsif file_ending == "png"
+                    content_type = mime_types["image"]
+                    content = File.binread(resource)
+                elsif file_ending == "ico"
+                    content_type = mime_types["favicon"]
+                    content = File.binread(resource)
+                elsif file_ending == "html"
+                    content_type = mime_types["html"]
                     content = File.read(resource)
                 end
             else
