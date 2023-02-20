@@ -1,5 +1,6 @@
 require 'socket'
 require_relative 'request_handler'
+require_relative 'mimeTypes'
 
 class HTTPServer
 
@@ -22,48 +23,12 @@ class HTTPServer
             puts data
             puts "-" * 40 
 
-            mime_types = {
-                "css" => "text/css",
-                "js" => "application/javascript",
-                "html" => "text/html",
-                "image" => "image/*",
-                "favicon" => "image/x-icon"
-            }
             parseddata = @request_handler.parse_request(data)
             sizeOfData = parseddata.size
             resource = "./files#{parseddata[:resource]}"
-            p "-########################################################################"
-            p resource
 
-            #Sen kolla om resursen (filen finns)
-            #kolla filändelsen med split
-            #kan även kolla accept header i request
-            #grillkorv.css
-            #banan.korv.jpg.css
-            file_ending = resource.split(".").last
-            if File.exists?(resource)
-                status = 200
-                if file_ending == "css"
-                    content_type = mime_types["css"]
-                    content = File.read(resource)
-                elsif file_ending == "js"
-                    content_type = mime_types["js"]
-                    content = File.read(resource)
-                elsif file_ending == "png"
-                    content_type = mime_types["image"]
-                    content = File.binread(resource)
-                elsif file_ending == "ico"
-                    content_type = mime_types["favicon"]
-                    content = File.binread(resource)
-                elsif file_ending == "html"
-                    content_type = mime_types["html"]
-                    content = File.read(resource)
-                end
-            else
-                status = 404
-                content = "Didnt find the resource"
-            end
-
+            @mimetypes = MimeTypes.new(resource)
+            content, status , content_type = @mimetypes.contentType
 
             session.print "HTTP/1.1 #{status}\r\n"
             session.print "Content-Type: #{content_type}\r\n"
