@@ -1,6 +1,7 @@
 require 'socket'
 require_relative 'request_handler'
 require_relative 'mimeTypes'
+require_relative 'response'
 
 class HTTPServer
 
@@ -24,18 +25,11 @@ class HTTPServer
             puts "-" * 40 
 
             parseddata = @request_handler.parse_request(data)
-            sizeOfData = parseddata.size
             resource = "./files#{parseddata[:resource]}"
 
             @mimetypes = MimeTypes.new(resource)
             content, status , content_type = @mimetypes.contentType
-
-            session.print "HTTP/1.1 #{status}\r\n"
-            session.print "Content-Type: #{content_type}\r\n"
-            session.print "Content-Length: #{content.size}\r\n"
-            session.print "\r\n"
-            session.print content
-            session.close
+            Response.new(status, content, content_type, session)
         end
     end
 end

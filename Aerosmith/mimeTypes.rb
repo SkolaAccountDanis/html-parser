@@ -18,25 +18,25 @@ class MimeTypes
         file_ending = @resource.split(".").last
             if File.exists?(@resource)
                 status = 200
-                if file_ending == "css"
+                case file_ending
+                when "css"
                     content_type = @mime_types["css"]
                     content = File.read(@resource)
-                elsif file_ending == "js"
+                when "js"
                     content_type = @mime_types["js"]
-                    content = File.read(@resource)
-                elsif file_ending == "png"
+                    content = File.read(@resource)  
+                when "png"
                     content_type = @mime_types["image"]
-                    content = File.binread(@resource)
-                elsif file_ending == "ico"
+                    content = File.binread(@resource)  
+                when "ico"
                     content_type = @mime_types["favicon"]
-                    content = File.binread(@resource)
-                elsif file_ending == "html"
+                    content = File.binread(@resource)    
+                when "html"
                     content_type = @mime_types["html"]
-                    content = File.read(@resource)
+                    content = File.read(@resource)   
+                else
+                    return content = "Didnt find the resource", status = 404
                 end
-                return content, status, content_type
-            else
-                return content = "Didnt find the resource", status = 404
             end
 
         end
