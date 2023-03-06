@@ -2,6 +2,7 @@ require 'socket'
 require_relative 'request_handler'
 require_relative 'mimeTypes'
 require_relative 'response'
+require_relative 'getFunction'
 
 class HTTPServer
 
@@ -33,5 +34,11 @@ class HTTPServer
         end
     end
 end
+
 server = HTTPServer.new(4567)
 server.start
+
+Mysin.get(server) do
+    p "wowoooork"
+end
+
