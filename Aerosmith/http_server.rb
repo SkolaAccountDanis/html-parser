@@ -2,7 +2,7 @@ require 'socket'
 require_relative 'request_handler'
 require_relative 'mimeTypes'
 require_relative 'response'
-require_relative 'getFunction'
+require_relative 'router'
 
 class HTTPServer
 
