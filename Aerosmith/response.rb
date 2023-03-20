@@ -10,10 +10,9 @@ class Response
     end
 
     def run
-
         @session.print "HTTP/1.1 #{@status}\r\n"
         @session.print "Content-Type: #{@content_type}\r\n"
-        @session.print "Content-Length: #{@content.length}\r\n"
+        @session.print "Content-Length: #{@content}\r\n"
         @session.print "\r\n"
         @session.print @content
         @session.close

@@ -6,32 +6,38 @@ class Router
   end
 
   def add_route(verb, path, &block)
-    @routes << [verb, path]
+    @routes << {verb: verb, resource: path, block: block}
   end
 
   def match_route(request)
-    i = 0
-    while request.length >= i
-      if @routes[i] == request[i]
-        p @routes
-        p request
-      end  
-      i += 1
+    route = @routes.find {|route| route[:verb] == request[:verb] and route[:resource] == request[:resource] }
+    if route
+      p route[:block].call 
+    else
+      p "There is no route"
     end
   end
 end
 
-router = Router.new
+# router = Router.new
 
-router.add_route('get', '/hello') do
-  "Hello, World"
-end
+# router.add_route('get', '/hello') do
+#   p 2+4
+# end
 
-router.add_route('get', '/senap') do
-  "Not this one"
-end
+# router.add_route('get', '/senap') do
+#   p "Not this one"
+# end
 
-p router
-router.match_route({verb: "GET", resource: "/hello"})
+# router.add_route('get', '/banan') do
+#   p "ifeho"
+# end
 
-router.match_route({verb: "GET", resource: "/banan"})
+
+# router.match_route({verb: 'get', resource: '/hello'})
+
+# router.match_route({verb: 'get', resource: '/banan'})
+
+# router.match_route({verb: 'get', resource: '/senap'})
+
+# router.match_route({verb: 'post', resource: '/senap/update'})

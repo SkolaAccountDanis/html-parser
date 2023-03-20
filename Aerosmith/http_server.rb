@@ -9,7 +9,14 @@ class HTTPServer
     def initialize(port)
         @port = port
         @request_handler = RequestHandler.new
+        @routes = []
     end
+
+    
+    def add_route(verb, path, &block)
+        @routes << {verb: verb, resource: path, block: block}
+    end
+
 
     def start
         server = TCPServer.new(@port)
@@ -20,25 +27,40 @@ class HTTPServer
             while line = session.gets and line !~ /^\s*$/
                 data += line
             end
-            puts "RECEIVED REQUEST"
-            puts "-" * 40
-            puts data
-            puts "-" * 40 
 
             parseddata = @request_handler.parse_request(data)
             resource = "./files#{parseddata[:resource]}"
 
             @mimetypes = MimeTypes.new(resource)
-            content, status , content_type = @mimetypes.contentType
-            Response.new(status, content, content_type, session)
+            content, status, content_type = @mimetypes.contentType
+            p status
+            if status == 200
+                Response.new(status, content, content_type, session)
+            elsif status == 404
+                path = parseddata[:resource]
+                status = 200
+                # p resource
+                # p @routes
+                # p block
+                content_type = 'text/html'
+                @routes.filter{|route| route[:verb] == "get" && route[:resource] == path}.each do |route|
+                    Response.new(status, route[:block], content_type, session)   
+                end
+            end
         end
     end
 end
 
 server = HTTPServer.new(4567)
-server.start
 
-Mysin.get(server) do
-    p "wowoooork"
+
+server.add_route('get', '/hello') do
+    "<h1>Hello</h1>"
 end
 
+server.add_route('get', '/print') do
+    2+4
+end
+
+
+server.start
