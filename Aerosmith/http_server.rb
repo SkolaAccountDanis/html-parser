@@ -33,7 +33,6 @@ class HTTPServer
 
             @mimetypes = MimeTypes.new(resource)
             content, status, content_type = @mimetypes.contentType
-            p status
             if status == 200
                 Response.new(status, content, content_type, session)
             elsif status == 404
@@ -44,7 +43,7 @@ class HTTPServer
                 # p block
                 content_type = 'text/html'
                 @routes.filter{|route| route[:verb] == "get" && route[:resource] == path}.each do |route|
-                    Response.new(status, route[:block], content_type, session)   
+                    Response.new(status, route[:block].call, content_type, session)   
                 end
             end
         end
@@ -59,7 +58,7 @@ server.add_route('get', '/hello') do
 end
 
 server.add_route('get', '/print') do
-    2+4
+    "<h1>#{2+4}</h1>"
 end
 
 
