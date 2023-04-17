@@ -14,9 +14,17 @@ class HTTPServer
 
     
     def add_route(verb, path, &block)
-        @routes << {verb: verb, resource: path, block: block}
+        regex_string = path.gsub(/:\w+/, "(.+)")
+        regex_path = Regexp.new(regex_string)#omvandla till regexp
+        @routes << {verb: verb, resource: regex_path, block: block}
     end
 
+    def match_route(request)
+        match = @routes.find {|route| request.match(route[:resource])}
+        if match
+            
+        end
+    end
 
     def start
         server = TCPServer.new(@port)
@@ -38,12 +46,18 @@ class HTTPServer
             elsif status == 404
                 path = parseddata[:resource]
                 status = 200
-                # p resource
-                # p @routes
-                # p block
+                i = 2
+                params = []
+                while i < path.split("/").length
+                    params << path.split("/")[i]
+                    i += 1  
+                    p params
+                end
+
                 content_type = 'text/html'
                 @routes.filter{|route| route[:verb] == "get" && route[:resource] == path}.each do |route|
                     Response.new(status, route[:block].call, content_type, session)   
+
                 end
             end
         end
@@ -51,6 +65,7 @@ class HTTPServer
 end
 
 server = HTTPServer.new(4567)
+
 
 
 server.add_route('get', '/hello') do
@@ -61,5 +76,13 @@ server.add_route('get', '/print') do
     "<h1>#{2+4}</h1>"
 end
 
+server.add_route('get', '/test/:term1/:term2') do |term1, term2|
+    "<h1>#{term1 + term2}<h1>"
+end
+
+
+server.add_route('get', '/test/testigen/:term1/:term2') do |term1, term2|
+    "<h1>#{term1 + term2}<h1>"
+end
 
 server.start
