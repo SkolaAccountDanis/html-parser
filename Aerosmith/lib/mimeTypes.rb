@@ -1,5 +1,6 @@
 
-
+# Class Mimetypes
+# Class that 
 class MimeTypes
 
     def initialize(resource)

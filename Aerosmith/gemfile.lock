@@ -2,12 +2,14 @@ GEM
   remote: https://rubygems.org/
   specs:
     minitest (5.16.3)
+    yard (0.9.34)
 
 PLATFORMS
   x64-mingw-ucrt
 
 DEPENDENCIES
   minitest
+  yard
 
 BUNDLED WITH
    2.3.7
