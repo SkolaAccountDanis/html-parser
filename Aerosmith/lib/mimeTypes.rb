@@ -1,8 +1,13 @@
 
 # Class Mimetypes
-# Class that 
+# 
+# assigns mimetype to the resource provided
 class MimeTypes
-
+    
+    # Initializes a new instance of the MimeTypes class
+    # 
+    # @param resource [String] the content of the resource
+    # @return [void]
     def initialize(resource)
         @resource = resource
         @mime_types = {
@@ -14,7 +19,9 @@ class MimeTypes
         }
     end
 
-   
+    # Determines the content type of the content in the resource
+    # 
+    # @return [Array] array containing the content, contenttype and status of the resource
     def contentType
         file_ending = @resource.split(".").last
         content = nil

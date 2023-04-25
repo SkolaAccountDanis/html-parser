@@ -1,5 +1,12 @@
+# class RequestHandler
+# 
+# the class is responsible for parsing incomin HTTP requests
 class RequestHandler
   
+  # Parses through the HTTP request and returns a hash representing the request
+  # 
+  # @param request [String] the HTTP request to be parsed
+  # @return [Hash] the parsed request
   def parse_request(request)
     request_line = request
         .split('\n')
